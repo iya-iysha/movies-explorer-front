@@ -1,0 +1,9 @@
+.movies {
+  padding: 0 5.5%;
+}
+
+@media (max-width: 768px) {
+  .movies {
+    padding: 0 4%;
+  }
+}

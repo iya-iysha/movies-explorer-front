@@ -1,0 +1,137 @@
+.profile {
+  display: flex;
+  flex-direction: column;
+  padding: 10vh 34% 10vh;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .profile {
+    padding: 22vh 23.3% 26.3vh;
+  }
+}
+
+@media (max-width: 320px) {
+  .profile {
+    padding: 8vh 9.5% 9.5vh;
+  }
+}
+
+.profile__title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: normal;
+  margin: 0;
+  padding: 0;
+}
+
+.profile__form {
+  display: flex;
+  flex-direction: column;
+  padding: 106px 0 0;
+  justify-content: space-between;
+  height: 49.5vh;
+}
+
+@media (max-width: 768px) {
+  .profile__form {
+    padding: 80px 0 0;
+    height: 32.7vh;
+  }
+}
+
+@media (max-width: 320px) {
+  .profile__form {
+    padding: 63px 0 0;
+    height: 64.7vh;
+  }
+}
+
+.profile__inputs {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.profile__input-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 17px 0 16px;
+  margin: 0;
+  border-bottom: solid 1px #424242;
+}
+
+.profile__input-div:last-child {
+  border: none;
+}
+
+.profile__input-label {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: normal;
+  padding: 0;
+  margin: 0;
+}
+
+.profile__input {
+  color: #FFF;
+  text-align: right;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: normal;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile__input::placeholder {
+  color: #8B8B8B;
+}
+
+.profile__input:focus {
+  outline: transparent;
+  border-bottom: solid 1px #4285F4;
+}
+
+.profile__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: normal;
+}
+
+@media (max-width: 320px) {
+  .profile__buttons {
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+.profile__edit-btn {
+  background-color: transparent;
+  border: none;
+  color: #FFFFFF;
+}
+
+.profile__exit-btn {
+  color: #EE3465;
+  text-decoration: none;
+}
+
+.profile__submit-btn {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+  padding: 13px 0 15px;
+  background-color: #3456F3;
+  border-radius: 3px;
+  border: none;
+  color: #FFFFFF;
+}

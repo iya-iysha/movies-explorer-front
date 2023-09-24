@@ -1,0 +1,27 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0;
+  width: 100%;
+}
+
+.main__title {
+  border: none;
+  border-bottom: solid 1px #DADADA;
+  padding: 0 0 23px;
+  margin: 0;
+  color: #FFF;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: -0.88px;
+}
+
+@media (max-width: 320px) {
+  .main__title {
+    padding: 0 0 28px;
+    font-size: 18px;
+    letter-spacing: -0.72px;
+  }
+}
