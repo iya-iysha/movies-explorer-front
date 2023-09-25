@@ -1,9 +1,10 @@
+import '../App/App.css';
 import './FilterCheckBox.css';
 
 export default function FilterCheckBox () {
   return (
     <div className="filter">
-      <label className="filter__switch">
+      <label className="filter__switch button">
         <input className="filter__switch-input" type="checkbox" />
         <span className="filter__slider"></span>
       </label>

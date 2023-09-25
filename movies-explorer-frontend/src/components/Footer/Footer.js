@@ -12,10 +12,10 @@ export default function Footer () {
           <p className="footer__caption footer__caption_type_title">Учебный проект Яндекс.Практикум х BeatFilm.</p>
           <div className="footer__info">
             <p className="footer__caption footer__caption_type_year">&#169; 2020</p>
-            <div className="footer__links">
-              <a className="footer__caption link" href="https://practicum.yandex.ru/">Яндекс.Практикум</a>
-              <a className="footer__caption link" href="https://github.com/iya-iysha">Github</a>
-            </div>
+            <ul className="footer__links">
+              <li className="footer__link"><a className="footer__caption link" href="https://practicum.yandex.ru/" target="_blank" rel="noreferrer">Яндекс.Практикум</a></li>
+              <li className="footer__link"><a className="footer__caption link" href="https://github.com/iya-iysha" target="_blank" rel="noreferrer">Github</a></li>
+            </ul>
           </div>
         </footer>
       }

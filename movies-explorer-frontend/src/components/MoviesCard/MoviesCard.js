@@ -8,7 +8,7 @@ export default function MoviesCard ({ card }) {
   return (
     <div className="card">
       <div className="card__info">
-        <p className="card__title">{card.title}</p>
+        <h2 className="card__title">{card.title}</h2>
         <p className="card__duration">{card.duration}</p>
       </div>
       <img className="card__image" src={card.image} alt={card.title} />

@@ -20,7 +20,7 @@ export default function Navigation({isLoggedIn}) {
         <>
           <button className="nav__burger button" type="button" onClick={onClick}></button>
           <div className="nav__menu">
-            <button className="nav__close-btn button" onClick={onClick}></button>
+            <button className="nav__close-btn button" type="button" onClick={onClick}></button>
             <div className="nav__container">
               <div className="nav__links">
                 <Link to="/" className={`nav__link link nav__link_type_main ${location.pathname === '/' ? 'nav__link_type_active' : ''}`} >Главная</Link>

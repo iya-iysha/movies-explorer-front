@@ -40,28 +40,30 @@ export default function Profile ({ user }) {
   
 
   return (
-    <main className="profile">
-      <h1 className="profile__title">Привет, {user.name}!</h1>
-      <form className="profile__form">
-        <div className="profile__inputs">
-          <div className="profile__input-div">
-              <label className="profile__input-label">Имя</label>
-              <input className="profile__input profile__input_type_name" placeholder="Имя" value={name} onChange={handleNameChange}></input>
+    <main>
+      <section className="profile">
+        <h1 className="profile__title">Привет, {user.name}!</h1>
+        <form className="profile__form">
+          <div className="profile__inputs">
+            <div className="profile__input-div">
+                <label className="profile__input-label">Имя</label>
+                <input className="profile__input profile__input_type_name" placeholder="Имя" value={name} onChange={handleNameChange}></input>
+            </div>
+            <div className="profile__input-div">
+                <label className="profile__input-label">E-mail</label>
+                <input className="profile__input profile__input_type_email" placeholder="example@yandex.ru" value={email} onChange={handleEmailChange}></input>
+            </div>
           </div>
-          <div className="profile__input-div">
-              <label className="profile__input-label">E-mail</label>
-              <input className="profile__input profile__input_type_email" placeholder="example@yandex.ru" value={email} onChange={handleEmailChange}></input>
-          </div>
-        </div>
-        {
-          !editMode ? 
-            <div className="profile__buttons">
-              <button className="profile__edit-btn link" type='button' onClick={clickEditBtn}>Редактировать</button>
-              <Link className="profile__exit-btn link" to='/'>Выйти из аккаунта</Link>
-            </div> :
-            <button className="profile__submit-btn button" type="submit" onClick={clickEditBtn}>Сохранить</button>
-        }
-      </form>
+          {
+            !editMode ? 
+              <div className="profile__buttons">
+                <button className="profile__edit-btn link" type='button' onClick={clickEditBtn}>Редактировать</button>
+                <Link className="profile__exit-btn link" to='/'>Выйти из аккаунта</Link>
+              </div> :
+              <button className="profile__submit-btn button" type="submit" onClick={clickEditBtn}>Сохранить</button>
+          }
+        </form>
+      </section>
     </main>  
   )
 }

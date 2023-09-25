@@ -6,13 +6,13 @@ export default function MoviesCardList ({ cards }) {
 
   return (
     <section className="card-list">
-      <div className="card-list__cards">
+      <ul className="card-list__cards">
         {
           cards.map((card) => (
-            <Card key={card._id} card={card}  />
+            <li className="card-list__item" key={card._id}><Card key={card._id} card={card} /></li>
           ))
         }
-      </div>
+      </ul>
       <button className="card-list__more-btn button">Ещё</button>
     </section>
   )
