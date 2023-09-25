@@ -1,0 +1,78 @@
+.not-found {
+  display: flex;
+  flex-direction: column;
+  padding: 35vh 0 8.6vh;
+  justify-content: space-between;
+  min-height: 56.7vh;
+  align-items: center;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .not-found {
+    padding: 40vh 0 21.7vh;
+    min-height: 38.5vh;
+  }
+}
+
+@media (max-width: 320px) {
+  .not-found {
+    padding: 42.5vh 0 3.8vh;
+    min-height: 53.5vh;
+  }
+}
+
+.not-found__message {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+@media (max-width: 320px) {
+  .not-found__message {
+    gap: 10px;
+  }
+}
+
+.not-found__code {
+  font-size: 140px;
+  font-weight: 400;
+  line-height: normal;  
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 320px) {
+  .not-found__code {
+    font-size: 80px;
+  }
+}
+
+.not-found__caption {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: normal;
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 320px) {
+  .not-found__caption {
+    font-size: 12px;
+  }
+}
+
+.not-found__back-btn {
+  background-color: transparent;
+  color: #4285F4;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
+}
+
+@media (max-width: 320px) {
+  .not-found__back-btn {
+    font-size: 12px;
+  }
+}
