@@ -12,12 +12,12 @@ export default function Login () {
           <div className="auth__div">
             <label className="auth__input-name">E-mail</label>
             <input className="auth__input auth__input_type_email" id="email" type="email" placeholder="example@yandex.ru" minLength="2" maxLength="30" />
-            <span className="auth__input-error email-input-error"></span>
+            <span className="input-error email-input-error"></span>
           </div>
           <div className="auth__div">
             <label className="auth__input-name">Пароль</label>
             <input className="auth__input auth__input_type_password auth__input_invalid" id="password" type="password" placeholder="Пароль" minLength="8" maxLength="30" />
-            <span className="auth__input-error password-input-error auth__input-error_active">Что-то пошло не так...</span>
+            <span className="input-error password-input-error">Что-то пошло не так...</span>
           </div>
         </div>
         <Link to="/movies"><button className="auth__submit-btn button auth__submit-btn_page_signin" type="submit">Войти</button></Link>

@@ -25,6 +25,7 @@
   background-color: transparent;
   padding: 9px;
   margin: 0 0 25px;
+  position: relative;
 }
 
 @media (max-width: 320px) {

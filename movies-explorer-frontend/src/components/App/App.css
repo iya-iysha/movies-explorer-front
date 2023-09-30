@@ -32,3 +32,18 @@
 .button:hover {
   opacity: 0.8;
 }
+
+.input-error {
+  position: absolute;
+  left: 0px;
+  top: calc(100% + 5px);
+  color: #EE3465;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: normal;
+  visibility: hidden;
+}
+
+.input-error_active {
+  visibility: visible;
+}
