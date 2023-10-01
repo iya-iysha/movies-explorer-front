@@ -28,7 +28,7 @@ export default function MoviesCardList ({ cards, savedCards, onClickSaveBtn, onC
           ))
         }
       </ul>
-      <button className="card-list__more-btn button">Ещё</button>
+      {location === '/movies' && <button className="card-list__more-btn button">Ещё</button>}
     </section>
   )
 }

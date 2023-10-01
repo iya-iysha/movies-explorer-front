@@ -37,7 +37,7 @@ export const singin = ({ password, email }) => {
 };
 
 export const checkToken = ( jwt ) => {
-  return fetch(`${BASE_URL}/me`, {
+  return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

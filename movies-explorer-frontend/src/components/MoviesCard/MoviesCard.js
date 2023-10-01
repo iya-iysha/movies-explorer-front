@@ -15,9 +15,15 @@ export default function MoviesCard ({ card, onClickSaveBtn, onClickDeleteBtn, is
     onClickDeleteBtn(card);
   }
 
+  const onClickCard = () => {
+    
+  }
+
+  console.log(card.trailerLink);
+
   return (
-    <div className="card">
-      <div className="card__info">
+    <a className="card" href={card.trailerLink} target="_blank" rel="noreferrer">
+      <div className="card__info" >
         <h2 className="card__title">{card.nameRU}</h2>
         <p className="card__duration">{`${Math.floor(card.duration/60)}ч ${card.duration%60}м`}</p>
       </div>
@@ -27,6 +33,6 @@ export default function MoviesCard ({ card, onClickSaveBtn, onClickDeleteBtn, is
           !isSaved(card) && "Сохранить"
         }
       </button>
-    </div>
+    </a>
   )
 }
