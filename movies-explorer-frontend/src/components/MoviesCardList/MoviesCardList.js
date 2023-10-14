@@ -2,9 +2,12 @@ import '../App/App.css';
 import './MoviesCardList.css';
 import Card from '../MoviesCard/MoviesCard';
 import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import useHandleDisplayMovies from '../../hooks/useHandleDisplayMovies';
 
-export default function MoviesCardList ({ cards, savedCards, onClickSaveBtn, onClickDeleteBtn }) {
+export default function MoviesCardList ({ savedCards, shownMovies, onClickSaveBtn, onClickDeleteBtn }) {
   const location = useLocation().pathname;
+  const { displayMovies, controlResize, handleSetSize, handleAddBtn } = useHandleDisplayMovies();
 
   const isSaved = (card) => {
     if (location === '/movies' && !!savedCards.find(movie => movie.movieId === card.id)) {
@@ -15,20 +18,26 @@ export default function MoviesCardList ({ cards, savedCards, onClickSaveBtn, onC
     else return false
   }
 
+  useEffect(() => {
+    handleSetSize();
+    window.addEventListener('resize', controlResize);
+    return () => window.removeEventListener('resize', controlResize);
+  }, []);
+
   return (
     <section className="card-list">
       <ul className="card-list__cards">
         {
           location === '/movies' ?
-          cards.map((card) => (
+          shownMovies.slice(0, displayMovies).map((card) => (
             <li className="card-list__item" key={card.id}><Card key={card.id} card={card} onClickSaveBtn={onClickSaveBtn} onClickDeleteBtn={onClickDeleteBtn} isSaved={isSaved}  /></li>
           )) :
-          savedCards.map((card) => (
+          shownMovies.map((card) => (
             <li className="card-list__item" key={card._id}><Card key={card._id} card={card} onClickDeleteBtn={onClickDeleteBtn} isSaved={isSaved}  /></li>
           ))
         }
       </ul>
-      {location === '/movies' && <button className="card-list__more-btn button">Ещё</button>}
+      {location === '/movies' && shownMovies.length > displayMovies && <button className="card-list__more-btn button" onClick={handleAddBtn}>Ещё</button>}
     </section>
   )
 }

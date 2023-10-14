@@ -72,10 +72,6 @@
   border-bottom: solid 1px #424242;
 }
 
-.auth__input_invalid {
-  color: #EE3465;
-}
-
 .auth__input:focus {
   border-bottom: solid 1px #4285F4;
   outline: transparent;
@@ -97,10 +93,6 @@
   line-height: normal;
   color: #FFFFFF;
   padding: 14px 0;
-}
-
-.auth__submit-btn:hover {
-  opacity: 0.8;
 }
 
 @media (max-width: 320px) {

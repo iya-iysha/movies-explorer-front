@@ -7,3 +7,11 @@
     padding: 0 4%;
   }
 }
+
+.movies__caption {
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 400;
+  margin: 10px 0;
+  padding: 0;
+}

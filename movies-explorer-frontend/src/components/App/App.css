@@ -47,3 +47,7 @@
 .input-error_active {
   visibility: visible;
 }
+
+.input_invalid {
+  color: #EE3465;
+}

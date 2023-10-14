@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
 export default function Login ({ onSubmit }) {
-
+  const [errors, setErrors] = useState([])
+  const [isValid, setIsValid] = useState(false);
   const [formData, setFormData] = useState({
     password: '',
     email: ''
@@ -18,6 +19,9 @@ export default function Login ({ onSubmit }) {
       ...formData,
       [name]: value
     })
+
+    setErrors({...errors, [name]: e.target.validationMessage });
+    setIsValid(e.target.closest("form").checkValidity());
 
     console.log(formData);
   }
@@ -38,12 +42,12 @@ export default function Login ({ onSubmit }) {
           <div className="auth__div">
             <label className="auth__input-name">E-mail</label>
             <input className="auth__input auth__input_type_email" id="email" type="email" onChange={handleChange} value={formData.email} name="email" placeholder="example@yandex.ru" minLength="2" maxLength="30" required />
-            <span className="input-error email-input-error"></span>
+            <span className={`input-error email-input-error ${!isValid && 'input-error_active'}`}>{errors.email}</span>
           </div>
           <div className="auth__div">
             <label className="auth__input-name">Пароль</label>
             <input className="auth__input auth__input_type_password" id="password" type="password" onChange={handleChange} value={formData.password} name="password" placeholder="Пароль" minLength="8" maxLength="30" required />
-            <span className="input-error password-input-error">Что-то пошло не так...</span>
+            <span className={`input-error password-input-error ${!isValid && 'input-error_active'}`}>{errors.password}</span>
           </div>
         </div>
         <button className="auth__submit-btn button auth__submit-btn_page_signin" type="submit">Войти</button>

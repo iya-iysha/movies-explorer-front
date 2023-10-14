@@ -2,9 +2,8 @@ import '../App/App.css';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 import { useState, useEffect, useContext } from 'react';
 import './Profile.css';
-import { Link } from 'react-router-dom';
 
-export default function Profile ({ onClickSignOut, onUpdateUser }) {
+export default function Profile ({ onClickSignOut, onUpdateUser, requestResult, setRequestResult }) {
   const currentUser = useContext(CurrentUserContext);
   const [editMode, setEditMode] = useState (false);
 
@@ -20,8 +19,6 @@ export default function Profile ({ onClickSignOut, onUpdateUser }) {
       ...formData,
       [name]: value
     })
-
-    console.log(formData);
   }
 
   const handleSubmit = (e) => {
@@ -30,11 +27,11 @@ export default function Profile ({ onClickSignOut, onUpdateUser }) {
       name: formData.name,
       email: formData.email
     })
-    clickEditBtn();
   }
 
-  const clickEditBtn = () => {
-    setEditMode(!editMode);
+  const clickEditBtn = (e) => {
+    e.preventDefault();
+    setEditMode(true);
   }
 
   useEffect(() => {
@@ -43,6 +40,16 @@ export default function Profile ({ onClickSignOut, onUpdateUser }) {
       email: currentUser.email
     })
   }, [currentUser]);
+
+  useEffect(() => {
+    setRequestResult({message: '', status: 0});
+  }, []);
+  
+  useEffect(() => {
+    if (requestResult.status === 200) {
+      setEditMode(false);
+    }
+  }, [requestResult]);
   
   return (
     <main>
@@ -62,11 +69,17 @@ export default function Profile ({ onClickSignOut, onUpdateUser }) {
           {
             !editMode ? 
               <div className="profile__buttons">
-                <button className="profile__edit-btn link" type='button' onClick={clickEditBtn}>Редактировать</button>
+                {requestResult.status === 200 && <span className="profile__success-message">{requestResult.message}</span>}
+                <button className="profile__edit-btn link" type="button" onClick={clickEditBtn}>Редактировать</button>
                 <p className="profile__exit-btn link" onClick={onClickSignOut}>Выйти из аккаунта</p>
               </div> :
-              <button className="profile__submit-btn button" type="submit">Сохранить</button>
+              <div className="submit-area">
+                {requestResult.status === 409 && <span className="submit-area__error">{requestResult.message}</span>}
+                <button className="submit-area__btn button" type="submit">Сохранить</button>
+              </div>
+              
           }
+          
         </form>
       </section>
     </main>  

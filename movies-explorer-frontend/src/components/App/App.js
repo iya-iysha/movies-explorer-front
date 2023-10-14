@@ -4,7 +4,7 @@ import planetImg from '../../images/web-planet.svg';
 import arrowBtn from '../../images/arrow-btn.svg';
 import './App.css';
 import Header from '../Header/Header';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Main from '../Main/Main';
 import Footer from '../Footer/Footer';
 import Movies from '../Movies/Movies';
@@ -20,11 +20,18 @@ import CurrentUserContext from '../../contexts/CurrentUserContext';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
 function App() {
+  const location = useLocation().pathname;
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [foundMovies, setFoundMovies] = useState([]);
   const [movies, setMovies] = useState([]);
   const [savedMovies, setSavedMovies] = useState([]);
+  const [foundSavedMovies, setFoundSavedMovies] = useState([]);
+  const [shownMovies, setShownMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const [requestResult, setRequestResult] = useState({});
 
   const handleSignUp = ({password, email, name}) => {
     auth.signup({ password, email, name })
@@ -37,12 +44,10 @@ function App() {
   }
 
   const handleSignIn = ({ password, email }) => {
-    console.log('sign in');
     auth.singin({ password, email })
     .then((data) => {
       if (data.token) {
         localStorage.setItem('jwt', data.token);
-        console.log('token received');
       }
     })
     .then(() => {
@@ -54,7 +59,6 @@ function App() {
   }
 
   const handleSuccessSignIn = () => {
-    console.log('handleSuccess');
     setIsLoggedIn(true);
     navigate("/", { replace: true });
   }
@@ -81,21 +85,34 @@ function App() {
   }
 
   const updateUserInfo = ({ name, email }) => {
-    console.log('update');
     mainApi.updateUserInfo({ name, email })
     .then((data) => {
-      console.log('updated');
       setCurrentUser(data.user);
+      setRequestResult({message: 'Данные успешно обновлены', status: 200});
     })
-    .catch((err) => console.log(err));
+    .then(() => {
+      
+    })
+    .catch((err) => {
+      if (err.status === 409) {
+        console.log(err.status);
+        setRequestResult({ message: 'Пользователь с таким email уже существует', status: err.status});
+        console.log(requestResult);
+      }
+    });
   }
 
-  const getMovies = () => {
+  const getMovies = (movieName) => {
+    setIsLoading(true);
     moviesApi.getMovies()
     .then((movies) => {
       setMovies(movies);
+      searchMovies({
+        movies: movies,
+        movieName: movieName
+      })
+      setIsLoading(false);
     })
-    .catch((err) => console.log(err))
   };
 
   const saveMovie = (card) => {
@@ -113,17 +130,19 @@ function App() {
       movieId: card.id
      })
     .then((movie) => {
-      console.log(movie);
+      setSavedMovies([movie, ...savedMovies]);
     })
     .catch((err) => console.log(err))
   };
 
   const deleteMovie = (card) => {
-    console.log(card);
     mainApi.deleteMovie(savedMovies.find(movie => movie.movieId === card.id || movie._id === card._id)._id)
     .then(() => {
-      setSavedMovies((state) => state.filter((c) => c._id !== card._id));
-      setMovies(((state) => state.map((c) => c.id === card.movieId ? card : c)));
+      if (location === '/movies') {
+        setSavedMovies((state) => state.filter((c) => c.movieId !== card.id));
+      } else if (location === '/saved-movies') {
+        setSavedMovies((state) => state.filter((c) => c._id !== card._id));
+      }
     })
   }
 
@@ -131,10 +150,50 @@ function App() {
     mainApi.getSavedMovies()
     .then((movies) => {
       if (!!movies.movies) {
-        setSavedMovies(movies.movies.filter(movie => movie.owner === currentUser._id));
+        setSavedMovies(movies.movies.filter(movie => movie.owner === currentUser._id).reverse());
       }
     })
     .catch((err) => console.log(err))
+  }
+
+  const searchMovies = ({ movies, movieName }) => {
+    if (location === '/movies') {
+      setFoundMovies(movies.filter(movie => movie.nameRU.toLowerCase().includes(movieName.toLowerCase().trim()) || movie.nameEN.toLowerCase().includes(movieName.toLowerCase().trim())));
+    } else if (location === '/saved-movies') {
+      setFoundSavedMovies(movies.filter(movie => movie.nameRU.toLowerCase().includes(movieName.toLowerCase().trim()) || movie.nameEN.toLowerCase().includes(movieName.toLowerCase().trim())));
+    }
+  }
+
+  const onSubmitSearch = (movieName) => {
+    if (location === '/movies') {
+      if (movies.length === 0) {
+        getMovies(movieName);        
+      } else {
+        setIsLoading(true);
+        searchMovies({
+          movies: movies,
+          movieName: movieName
+        })
+        setIsLoading(false);
+      }
+    } else if (location === '/saved-movies') {
+      searchMovies({
+        movies: savedMovies,
+        movieName: movieName
+      });
+    }
+  }
+
+  const handleFilter = (check) => {
+    setIsChecked(check);
+  }
+
+  const filterMovies = (movies) => {
+    if (isChecked) {
+      return movies.filter((movie) => movie.duration < 40);
+    } else {
+      return movies;
+    }
   }
 
   useEffect(() => {
@@ -143,14 +202,9 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      console.log('loggedin');
       mainApi.getCurrentUser()
         .then((data) => {
-          console.log(data.user);
           setCurrentUser(data.user);
-        })
-        .then(() => {
-          console.log(currentUser);
         })
         .catch((err) => console.log(err));
     }}, [isLoggedIn]);  
@@ -159,11 +213,31 @@ function App() {
     if (isLoggedIn) {
       getSavedMovies();
     }
-  })
+  }, [currentUser]);
 
-  getMovies();
-  
+  useEffect(() => {
+    if (location === '/movies') {
+      setFoundMovies([]);
+    }
+  }, [location]);
 
+  useEffect(() => {
+    if (location === '/saved-movies') {
+      setFoundSavedMovies(savedMovies);
+    }
+  }, [location, savedMovies]);
+
+  useEffect(() => {
+    if (location === '/movies') {
+      setShownMovies(filterMovies(foundMovies));
+    }
+  }, [location, foundMovies, isChecked]);
+
+  useEffect(() => {
+    if (location === '/saved-movies') {
+      setShownMovies(filterMovies(foundSavedMovies));
+    }
+  }, [location, foundSavedMovies, isChecked])
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -182,17 +256,17 @@ function App() {
             } />
             <Route path="/movies" element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <Movies cards={movies} savedCards={savedMovies} onClickSaveBtn={saveMovie} onClickDeleteBtn={deleteMovie} />
+                <Movies isLoading={isLoading} savedCards={savedMovies} shownMovies={shownMovies} onClickSaveBtn={saveMovie} onClickDeleteBtn={deleteMovie} onSearch={onSubmitSearch} onChangeFilter={handleFilter} />
               </ProtectedRoute>
             } />
             <Route path="/saved-movies" element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <Movies cards={movies} onClickDeleteBtn={deleteMovie} savedCards={savedMovies} />
+                <Movies onClickDeleteBtn={deleteMovie} savedCards={foundSavedMovies} shownMovies={shownMovies} onSearch={onSubmitSearch} onChangeFilter={handleFilter} />
               </ProtectedRoute>
             } />
             <Route path="/profile" element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <Profile onClickSignOut={handleSignOut} onUpdateUser={updateUserInfo} />
+                <Profile onClickSignOut={handleSignOut} onUpdateUser={updateUserInfo} requestResult={requestResult} setRequestResult={setRequestResult} />
               </ProtectedRoute>
             } />
             <Route path="*" element={
