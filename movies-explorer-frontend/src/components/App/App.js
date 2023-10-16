@@ -96,6 +96,9 @@ function App() {
   const handleSignOut = () => {
     setIsLoggedIn(false);
     localStorage.removeItem('jwt');
+    localStorage.removeItem('movies');
+    localStorage.removeItem('movieName');
+    localStorage.removeItem('check');
     setCurrentUser({});
   }
 
@@ -211,8 +214,6 @@ function App() {
     }
   }
 
-  console.log(localStorage.getItem('movieName'));
-
   const handleFilter = (check) => {
     setIsChecked(check);
     if (location === '/movies') {
@@ -276,7 +277,7 @@ function App() {
       setShownMovies(filterMovies(foundSavedMovies));
     }
     setInProcess(false);
-  }, [location, foundSavedMovies, isChecked])
+  }, [location, foundSavedMovies, isChecked]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>

@@ -11,7 +11,7 @@ export default function Profile ({ onClickSignOut, onUpdateUser, requestResult, 
     name: '',
     email: ''
   });
-  const { errors, isValid, handleChange } = useValidationForm({ formData, setFormData })
+  const { errors, isValid, handleChange, setIsValid } = useValidationForm({ formData, setFormData })
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -42,6 +42,10 @@ export default function Profile ({ onClickSignOut, onUpdateUser, requestResult, 
       setEditMode(false);
     }
   }, [requestResult]);
+
+  useEffect(() => {
+    setIsValid(!(formData.email === currentUser.email && formData.name === currentUser.name));
+  }, [handleChange]);
   
   return (
     <main>

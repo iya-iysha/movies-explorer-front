@@ -6,12 +6,10 @@ export default function MoviesCard ({ card, onClickSaveBtn, onClickDeleteBtn, is
   const location = useLocation().pathname;
 
   const onClickSave = () => {
-    console.log(card);
     onClickSaveBtn(card);
   }
 
   const onClickDelete = () => {
-    console.log(card);
     onClickDeleteBtn(card);
   }
 

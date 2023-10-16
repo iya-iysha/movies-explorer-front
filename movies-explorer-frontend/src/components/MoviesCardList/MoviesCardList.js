@@ -1,6 +1,6 @@
 import '../App/App.css';
 import './MoviesCardList.css';
-import Card from '../MoviesCard/MoviesCard';
+import MoviesCard from '../MoviesCard/MoviesCard';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import useHandleDisplayMovies from '../../hooks/useHandleDisplayMovies';
@@ -29,11 +29,11 @@ export default function MoviesCardList ({ savedCards, shownMovies, onClickSaveBt
       <ul className="card-list__cards">
         {
           location === '/movies' ?
-          shownMovies.slice(0, displayMovies).map((card) => (
-            <li className="card-list__item" key={card.id}><Card key={card.id} card={card} onClickSaveBtn={onClickSaveBtn} onClickDeleteBtn={onClickDeleteBtn} isSaved={isSaved} inProcess={inProcess} /></li>
+          shownMovies.slice(0, displayMovies).map((card, index) => (
+            <li className="card-list__item" key={index}><MoviesCard card={card} onClickSaveBtn={onClickSaveBtn} onClickDeleteBtn={onClickDeleteBtn} isSaved={isSaved} inProcess={inProcess} /></li>
           )) :
-          shownMovies.map((card) => (
-            <li className="card-list__item" key={card._id}><Card key={card._id} card={card} onClickDeleteBtn={onClickDeleteBtn} isSaved={isSaved} inProcess={inProcess} /></li>
+          shownMovies.map((card, index) => (
+            <li className="card-list__item" key={index}><MoviesCard card={card} onClickDeleteBtn={onClickDeleteBtn} isSaved={isSaved} inProcess={inProcess} /></li>
           ))
         }
       </ul>
