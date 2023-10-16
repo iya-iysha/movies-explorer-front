@@ -74,6 +74,10 @@
   border: solid 1.5px #4285F4;
 }
 
+.search-form__line:has(.search-form__film_invalid:focus) {
+  border: solid 1.5px #EE3465;
+}
+
 .search-form__submit {
   color: #FFF;
   text-align: center;
@@ -96,4 +100,10 @@
   .search-form__submit {
     padding: 12px 18px;
   }
+}
+
+.button_disabled {
+  background-color: #F8F8F8;
+  color: #C2C2C2;
+  cursor: default;
 }

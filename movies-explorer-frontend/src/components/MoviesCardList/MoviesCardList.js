@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import useHandleDisplayMovies from '../../hooks/useHandleDisplayMovies';
 
-export default function MoviesCardList ({ savedCards, shownMovies, onClickSaveBtn, onClickDeleteBtn }) {
+export default function MoviesCardList ({ savedCards, shownMovies, onClickSaveBtn, onClickDeleteBtn, inProcess }) {
   const location = useLocation().pathname;
   const { displayMovies, controlResize, handleSetSize, handleAddBtn } = useHandleDisplayMovies();
 
@@ -30,10 +30,10 @@ export default function MoviesCardList ({ savedCards, shownMovies, onClickSaveBt
         {
           location === '/movies' ?
           shownMovies.slice(0, displayMovies).map((card) => (
-            <li className="card-list__item" key={card.id}><Card key={card.id} card={card} onClickSaveBtn={onClickSaveBtn} onClickDeleteBtn={onClickDeleteBtn} isSaved={isSaved}  /></li>
+            <li className="card-list__item" key={card.id}><Card key={card.id} card={card} onClickSaveBtn={onClickSaveBtn} onClickDeleteBtn={onClickDeleteBtn} isSaved={isSaved} inProcess={inProcess} /></li>
           )) :
           shownMovies.map((card) => (
-            <li className="card-list__item" key={card._id}><Card key={card._id} card={card} onClickDeleteBtn={onClickDeleteBtn} isSaved={isSaved}  /></li>
+            <li className="card-list__item" key={card._id}><Card key={card._id} card={card} onClickDeleteBtn={onClickDeleteBtn} isSaved={isSaved} inProcess={inProcess} /></li>
           ))
         }
       </ul>

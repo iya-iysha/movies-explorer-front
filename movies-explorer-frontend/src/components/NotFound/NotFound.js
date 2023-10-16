@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function NotFound () {
   const navigate = useNavigate();
-  const goBack = () => {
+  const goBack = (e) => {
     navigate(-1);
   }
 

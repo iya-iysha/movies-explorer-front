@@ -24,43 +24,58 @@ function App() {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [foundMovies, setFoundMovies] = useState([]);
+  const [foundMovies, setFoundMovies] = useState(JSON.parse(localStorage.getItem('movies')) ?? []);
   const [movies, setMovies] = useState([]);
   const [savedMovies, setSavedMovies] = useState([]);
   const [foundSavedMovies, setFoundSavedMovies] = useState([]);
   const [shownMovies, setShownMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
+  const [inProcess, setInProcess] = useState(false);
+  const [isChecked, setIsChecked] = useState(JSON.parse(localStorage.getItem('check')) ?? false);
   const [requestResult, setRequestResult] = useState({});
+  
 
   const handleSignUp = ({password, email, name}) => {
+    setInProcess(true);
     auth.signup({ password, email, name })
     .then(() => {
-      handleSignIn({ password, email })
+      handleSignIn({ password, email });
+      setRequestResult({message: 'Регистрация прошла успешно', status: 200});
     })
     .catch((err) => {
-      console.log(err);
+      if (err.status === 409) {
+        setRequestResult({ message: 'Пользователь с таким email уже существует', status: err.status});
+      } else {
+        setRequestResult({ message: 'При регистрации пользователя произошла ошибка', status: err.status});
+      }
     })
+    .finally(() => {
+      setInProcess(false);
+    });
   }
 
   const handleSignIn = ({ password, email }) => {
+    setInProcess(true);
     auth.singin({ password, email })
     .then((data) => {
       if (data.token) {
         localStorage.setItem('jwt', data.token);
-      }
+      };
     })
     .then(() => {
       handleSuccessSignIn();
     })
     .catch((err) => {
-      console.log(err);
+      setRequestResult({ message: 'Вы ввели неправильный логин или пароль', status: err.status});
     })
+    .finally(() => {
+      setInProcess(false);
+    });
   }
 
   const handleSuccessSignIn = () => {
     setIsLoggedIn(true);
-    navigate("/", { replace: true });
+    navigate("/movies", { replace: true });
   }
 
   const handleTokenCheck = () => {
@@ -73,7 +88,7 @@ function App() {
         }
       })
       .catch((err) => {
-        console.log(err)
+        setRequestResult({ message: 'При авторизации произошла ошибка. Переданный токен некорректен', status: err.status })
       })
     }
   }
@@ -85,20 +100,21 @@ function App() {
   }
 
   const updateUserInfo = ({ name, email }) => {
+    setInProcess(true);
     mainApi.updateUserInfo({ name, email })
     .then((data) => {
       setCurrentUser(data.user);
       setRequestResult({message: 'Данные успешно обновлены', status: 200});
     })
-    .then(() => {
-      
-    })
     .catch((err) => {
       if (err.status === 409) {
-        console.log(err.status);
         setRequestResult({ message: 'Пользователь с таким email уже существует', status: err.status});
-        console.log(requestResult);
+      } else {
+        setRequestResult({ message: 'При обновлении профиля произошла ошибка', status: err.status});
       }
+    })
+    .finally(() => {
+      setInProcess(false);
     });
   }
 
@@ -116,6 +132,7 @@ function App() {
   };
 
   const saveMovie = (card) => {
+    setInProcess(true);
     mainApi.createMovie({ 
       country: card.country,
       director: card.director,
@@ -133,9 +150,13 @@ function App() {
       setSavedMovies([movie, ...savedMovies]);
     })
     .catch((err) => console.log(err))
+    .finally(() => {
+      setInProcess(false);
+    });
   };
 
   const deleteMovie = (card) => {
+    setInProcess(true);
     mainApi.deleteMovie(savedMovies.find(movie => movie.movieId === card.id || movie._id === card._id)._id)
     .then(() => {
       if (location === '/movies') {
@@ -144,6 +165,10 @@ function App() {
         setSavedMovies((state) => state.filter((c) => c._id !== card._id));
       }
     })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      setInProcess(false);
+    });
   }
 
   const getSavedMovies = () => {
@@ -165,6 +190,7 @@ function App() {
   }
 
   const onSubmitSearch = (movieName) => {
+    setInProcess(true);
     if (location === '/movies') {
       if (movies.length === 0) {
         getMovies(movieName);        
@@ -176,6 +202,7 @@ function App() {
         })
         setIsLoading(false);
       }
+      localStorage.setItem('movieName', movieName);
     } else if (location === '/saved-movies') {
       searchMovies({
         movies: savedMovies,
@@ -184,8 +211,13 @@ function App() {
     }
   }
 
+  console.log(localStorage.getItem('movieName'));
+
   const handleFilter = (check) => {
     setIsChecked(check);
+    if (location === '/movies') {
+      localStorage.setItem('check', JSON.stringify(check));
+    }
   }
 
   const filterMovies = (movies) => {
@@ -216,12 +248,6 @@ function App() {
   }, [currentUser]);
 
   useEffect(() => {
-    if (location === '/movies') {
-      setFoundMovies([]);
-    }
-  }, [location]);
-
-  useEffect(() => {
     if (location === '/saved-movies') {
       setFoundSavedMovies(savedMovies);
     }
@@ -229,14 +255,27 @@ function App() {
 
   useEffect(() => {
     if (location === '/movies') {
-      setShownMovies(filterMovies(foundMovies));
+      if (localStorage.getItem('movies')) {
+        setFoundMovies(JSON.parse(localStorage.getItem('movies')));
+      } else {
+        setFoundMovies([]);
+      }
     }
+  }, []);
+
+  useEffect(() => {
+    if (location === '/movies') {
+      setShownMovies(filterMovies(foundMovies));
+      localStorage.setItem('movies', JSON.stringify(filterMovies(foundMovies)));
+    }
+    setInProcess(false);
   }, [location, foundMovies, isChecked]);
 
   useEffect(() => {
     if (location === '/saved-movies') {
       setShownMovies(filterMovies(foundSavedMovies));
     }
+    setInProcess(false);
   }, [location, foundSavedMovies, isChecked])
 
   return (
@@ -249,24 +288,24 @@ function App() {
               <Main avatar={avatar} arrowBtn={arrowBtn} planetImg={planetImg}/>
             } />
             <Route path="/signup" element={
-              <Register onSubmit={handleSignUp} />
+              <Register onSubmit={handleSignUp} inProcess={inProcess} requestResult={requestResult} setRequestResult={setRequestResult} />
             } />
             <Route path="/signin" element={
-              <Login onSubmit={handleSignIn} />
+              <Login onSubmit={handleSignIn} inProcess={inProcess} requestResult={requestResult} setRequestResult={setRequestResult} />
             } />
             <Route path="/movies" element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <Movies isLoading={isLoading} savedCards={savedMovies} shownMovies={shownMovies} onClickSaveBtn={saveMovie} onClickDeleteBtn={deleteMovie} onSearch={onSubmitSearch} onChangeFilter={handleFilter} />
+                <Movies isLoading={isLoading} savedCards={savedMovies} shownMovies={shownMovies} onClickSaveBtn={saveMovie} onClickDeleteBtn={deleteMovie} onSearch={onSubmitSearch} onChangeFilter={handleFilter} inProcess={inProcess} />
               </ProtectedRoute>
             } />
             <Route path="/saved-movies" element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <Movies onClickDeleteBtn={deleteMovie} savedCards={foundSavedMovies} shownMovies={shownMovies} onSearch={onSubmitSearch} onChangeFilter={handleFilter} />
+                <Movies onClickDeleteBtn={deleteMovie} savedCards={foundSavedMovies} shownMovies={shownMovies} onSearch={onSubmitSearch} onChangeFilter={handleFilter} inProcess={inProcess} />
               </ProtectedRoute>
             } />
             <Route path="/profile" element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <Profile onClickSignOut={handleSignOut} onUpdateUser={updateUserInfo} requestResult={requestResult} setRequestResult={setRequestResult} />
+                <Profile onClickSignOut={handleSignOut} onUpdateUser={updateUserInfo} requestResult={requestResult} setRequestResult={setRequestResult} inProcess={inProcess} />
               </ProtectedRoute>
             } />
             <Route path="*" element={

@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 export default function FilterCheckBox ({ onChangeFilter }) {
   const location = useLocation().pathname;
   const [formData, setFormData] = useState({
-    check: false
+    check: JSON.parse(localStorage.getItem('check')) ?? false
   });
 
   const onChange = (e) => {
@@ -19,7 +19,11 @@ export default function FilterCheckBox ({ onChangeFilter }) {
   }
 
   useEffect(() => {
-    if (location === '/movies' || location === '/saved-movies') {
+    if (location === '/movies') {
+      setFormData({
+        check: JSON.parse(localStorage.getItem('check')) ?? false
+      })
+    } else if (location === '/saved-movies') {
       setFormData({
         check: false
       })

@@ -1,25 +1,17 @@
 import '../App/App.css';
+import './Profile.css';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 import { useState, useEffect, useContext } from 'react';
-import './Profile.css';
+import useValidationForm from '../../hooks/useValidationForm';
 
-export default function Profile ({ onClickSignOut, onUpdateUser, requestResult, setRequestResult }) {
+export default function Profile ({ onClickSignOut, onUpdateUser, requestResult, setRequestResult, inProcess }) {
   const currentUser = useContext(CurrentUserContext);
   const [editMode, setEditMode] = useState (false);
-
   const [formData, setFormData] = useState({
     name: '',
     email: ''
   });
-
-  const handleChange = (e) => {
-    const {name, value} = e.target;
-
-    setFormData({
-      ...formData,
-      [name]: value
-    })
-  }
+  const { errors, isValid, handleChange } = useValidationForm({ formData, setFormData })
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -58,12 +50,14 @@ export default function Profile ({ onClickSignOut, onUpdateUser, requestResult, 
         <form className="profile__form" onSubmit={handleSubmit}>
           <div className="profile__inputs">
             <div className="profile__input-div">
-                <label className="profile__input-label">Имя</label>
-                <input className="profile__input profile__input_type_name" placeholder="Имя" value={formData.name} onChange={handleChange} readOnly={!editMode} name="name"></input>
+              <label className="profile__input-label">Имя</label>
+              <input className={`profile__input profile__input_type_name ${errors.name && 'input_invalid'}`} placeholder="Имя" value={formData.name} onChange={handleChange} readOnly={!editMode} name="name" required minLength="2" maxLength="30"></input>
+              <span className={`input-error name-input-error ${!isValid && 'input-error_active'} input-error_page_profile`}>{errors.name}</span>
             </div>
             <div className="profile__input-div">
-                <label className="profile__input-label">E-mail</label>
-                <input className="profile__input profile__input_type_email" placeholder="example@yandex.ru" value={formData.email} onChange={handleChange} readOnly={!editMode} name="email"></input>
+              <label className="profile__input-label">E-mail</label>
+              <input className={`profile__input profile__input_type_email ${errors.email && 'input_invalid'}`} type="email" placeholder="example@yandex.ru" value={formData.email} onChange={handleChange} readOnly={!editMode} name="email" required></input>
+              <span className={`input-error email-input-error ${!isValid && 'input-error_active'} input-error_page_profile`}>{errors.email}</span>
             </div>
           </div>
           {
@@ -74,8 +68,8 @@ export default function Profile ({ onClickSignOut, onUpdateUser, requestResult, 
                 <p className="profile__exit-btn link" onClick={onClickSignOut}>Выйти из аккаунта</p>
               </div> :
               <div className="submit-area">
-                {requestResult.status === 409 && <span className="submit-area__error">{requestResult.message}</span>}
-                <button className="submit-area__btn button" type="submit">Сохранить</button>
+                {requestResult.status !== 200 && <span className="submit-area__error">{requestResult.message}</span>}
+                <button className={`submit-area__btn button ${!isValid && 'button_disabled'}`} type="submit" disabled={!isValid || inProcess}>Сохранить</button>
               </div>
               
           }
