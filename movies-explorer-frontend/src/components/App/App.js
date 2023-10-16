@@ -267,7 +267,7 @@ function App() {
   useEffect(() => {
     if (location === '/movies') {
       setShownMovies(filterMovies(foundMovies));
-      localStorage.setItem('movies', JSON.stringify(filterMovies(foundMovies)));
+      localStorage.setItem('movies', JSON.stringify(foundMovies));
     }
     setInProcess(false);
   }, [location, foundMovies, isChecked]);
