@@ -268,7 +268,6 @@ function App() {
 
   useEffect(() => {
     if (location === '/saved-movies') {
-      console.log(searchRequest);
       if (searchRequest.length > 0) {
         searchMovies({ movies: savedMovies, movieName: searchRequest});
       } else {
