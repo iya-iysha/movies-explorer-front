@@ -7,7 +7,7 @@ import useHandleDisplayMovies from '../../hooks/useHandleDisplayMovies';
 
 export default function MoviesCardList ({ savedCards, shownMovies, onClickSaveBtn, onClickDeleteBtn, inProcess }) {
   const location = useLocation().pathname;
-  const { displayMovies, controlResize, handleSetSize, handleAddBtn } = useHandleDisplayMovies();
+  const { displayMovies, controlResize, handleSetSize, handleAddBtn } = useHandleDisplayMovies({ shownMovies });
 
   const isSaved = (card) => {
     if (location === '/movies' && !!savedCards.find(movie => movie.movieId === card.id)) {

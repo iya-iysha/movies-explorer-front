@@ -75,7 +75,11 @@ function App() {
 
   const handleSuccessSignIn = () => {
     setIsLoggedIn(true);
-    navigate("/movies", { replace: true });
+    if (location === '/signin' || location === '/signup') {
+      navigate("/movies", { replace: true });
+    } else {
+      navigate(location, { replace: true });
+    }
   }
 
   const handleTokenCheck = () => {
@@ -100,6 +104,7 @@ function App() {
     localStorage.removeItem('movieName');
     localStorage.removeItem('check');
     setCurrentUser({});
+    navigate("/", { replace: true });
   }
 
   const updateUserInfo = ({ name, email }) => {

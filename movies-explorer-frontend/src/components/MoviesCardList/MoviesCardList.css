@@ -21,7 +21,7 @@
   padding: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 845px) {
   .card-list__cards {
     grid-template-columns: repeat(auto-fit, 342px);
     grid-auto-rows: 309px;

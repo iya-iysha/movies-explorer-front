@@ -2,6 +2,7 @@ import '../App/App.css';
 import './Profile.css';
 import CurrentUserContext from '../../contexts/CurrentUserContext';
 import { useState, useEffect, useContext } from 'react';
+import { REGEX_EMAIL } from '../../utils/constants.js';
 import useValidationForm from '../../hooks/useValidationForm';
 
 export default function Profile ({ onClickSignOut, onUpdateUser, requestResult, setRequestResult, inProcess }) {
@@ -60,7 +61,7 @@ export default function Profile ({ onClickSignOut, onUpdateUser, requestResult, 
             </div>
             <div className="profile__input-div">
               <label className="profile__input-label">E-mail</label>
-              <input className={`profile__input profile__input_type_email ${errors.email && 'input_invalid'}`} type="email" placeholder="example@yandex.ru" value={formData.email} onChange={handleChange} readOnly={!editMode} name="email" required></input>
+              <input className={`profile__input profile__input_type_email ${errors.email && 'input_invalid'}`} type="email" placeholder="example@yandex.ru" value={formData.email} onChange={handleChange} readOnly={!editMode} name="email" required pattern={REGEX_EMAIL}></input>
               <span className={`input-error email-input-error ${!isValid && 'input-error_active'} input-error_page_profile`}>{errors.email}</span>
             </div>
           </div>
