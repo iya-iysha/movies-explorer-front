@@ -270,7 +270,6 @@ function App() {
     if (location === '/saved-movies') {
       console.log(searchRequest);
       if (searchRequest.length > 0) {
-        console.log('а есть ли запросик', searchRequest.length);
         searchMovies({ movies: savedMovies, movieName: searchRequest});
       } else {
         setFoundSavedMovies(savedMovies);
@@ -286,7 +285,7 @@ function App() {
         setFoundMovies([]);
       }
     }
-  }, []);
+  }, [location]);
 
   useEffect(() => {
     if (location === '/movies') {
