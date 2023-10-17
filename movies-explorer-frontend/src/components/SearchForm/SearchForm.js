@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import useValidationForm from '../../hooks/useValidationForm';
 
-export default function SearchForm ({ onSubmit, onChangeFilter, inProcess }) {
+export default function SearchForm ({ onSubmit, onChangeFilter, inProcess, setSearchRequest, savedCards }) {
   const location = useLocation().pathname;
   const [formData, setFormData] = useState({
     movie: localStorage.getItem('movieName') ?? ''
@@ -31,6 +31,12 @@ export default function SearchForm ({ onSubmit, onChangeFilter, inProcess }) {
     
     resetValidation();
   }, [location]);
+
+  useEffect(() => {
+    if (location === '/saved-movies') {
+      setSearchRequest(formData.movie);
+    }
+  }, [savedCards]);
 
   return (
     <section className="search-form">

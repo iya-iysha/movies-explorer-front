@@ -33,7 +33,8 @@ function App() {
   const [inProcess, setInProcess] = useState(false);
   const [isChecked, setIsChecked] = useState(JSON.parse(localStorage.getItem('check')) ?? false);
   const [requestResult, setRequestResult] = useState({});
-  
+  const [hasSearched, setHasSearched] = useState(false);
+  const [searchRequest, setSearchRequest] = useState('');
 
   const handleSignUp = ({password, email, name}) => {
     setInProcess(true);
@@ -99,10 +100,7 @@ function App() {
 
   const handleSignOut = () => {
     setIsLoggedIn(false);
-    localStorage.removeItem('jwt');
-    localStorage.removeItem('movies');
-    localStorage.removeItem('movieName');
-    localStorage.removeItem('check');
+    localStorage.clear();
     setCurrentUser({});
     navigate("/", { replace: true });
   }
@@ -192,6 +190,7 @@ function App() {
   const searchMovies = ({ movies, movieName }) => {
     if (location === '/movies') {
       setFoundMovies(movies.filter(movie => movie.nameRU.toLowerCase().includes(movieName.toLowerCase().trim()) || movie.nameEN.toLowerCase().includes(movieName.toLowerCase().trim())));
+      localStorage.setItem('movies', JSON.stringify(movies.filter(movie => movie.nameRU.toLowerCase().includes(movieName.toLowerCase().trim()) || movie.nameEN.toLowerCase().includes(movieName.toLowerCase().trim()))));
     } else if (location === '/saved-movies') {
       setFoundSavedMovies(movies.filter(movie => movie.nameRU.toLowerCase().includes(movieName.toLowerCase().trim()) || movie.nameEN.toLowerCase().includes(movieName.toLowerCase().trim())));
     }
@@ -217,6 +216,7 @@ function App() {
         movieName: movieName
       });
     }
+    setHasSearched(true);
   }
 
   const handleFilter = (check) => {
@@ -241,11 +241,12 @@ function App() {
   useEffect(() => {
     if (isLoggedIn) {
       mainApi.getCurrentUser()
-        .then((data) => {
-          setCurrentUser(data.user);
-        })
-        .catch((err) => console.log(err));
-    }}, [isLoggedIn]);  
+      .then((data) => {
+        setCurrentUser(data.user);
+      })
+      .catch((err) => console.log(err));
+    }
+  }, [isLoggedIn]);  
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -254,10 +255,28 @@ function App() {
   }, [currentUser]);
 
   useEffect(() => {
-    if (location === '/saved-movies') {
-      setFoundSavedMovies(savedMovies);
+    if (location === '/movies') {
+      if (localStorage.getItem('movies')) {
+        setHasSearched(true);
+      } else {
+        setHasSearched(false);
+      }
+    } else if (location === '/saved-movies') {
+      setHasSearched(false);
     }
-  }, [location, savedMovies]);
+  }, [location]);
+
+  useEffect(() => {
+    if (location === '/saved-movies') {
+      console.log(searchRequest);
+      if (searchRequest.length > 0) {
+        console.log('а есть ли запросик', searchRequest.length);
+        searchMovies({ movies: savedMovies, movieName: searchRequest});
+      } else {
+        setFoundSavedMovies(savedMovies);
+      }
+    }
+  }, [location, savedMovies, searchRequest]);
 
   useEffect(() => {
     if (location === '/movies') {
@@ -272,7 +291,6 @@ function App() {
   useEffect(() => {
     if (location === '/movies') {
       setShownMovies(filterMovies(foundMovies));
-      localStorage.setItem('movies', JSON.stringify(foundMovies));
     }
     setInProcess(false);
   }, [location, foundMovies, isChecked]);
@@ -301,12 +319,12 @@ function App() {
             } />
             <Route path="/movies" element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <Movies isLoading={isLoading} savedCards={savedMovies} shownMovies={shownMovies} onClickSaveBtn={saveMovie} onClickDeleteBtn={deleteMovie} onSearch={onSubmitSearch} onChangeFilter={handleFilter} inProcess={inProcess} />
+                <Movies isLoading={isLoading} savedCards={savedMovies} shownMovies={shownMovies} onClickSaveBtn={saveMovie} onClickDeleteBtn={deleteMovie} onSearch={onSubmitSearch} onChangeFilter={handleFilter} inProcess={inProcess} hasSearched={hasSearched} />
               </ProtectedRoute>
             } />
             <Route path="/saved-movies" element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <Movies onClickDeleteBtn={deleteMovie} savedCards={foundSavedMovies} shownMovies={shownMovies} onSearch={onSubmitSearch} onChangeFilter={handleFilter} inProcess={inProcess} />
+                <Movies onClickDeleteBtn={deleteMovie} savedCards={foundSavedMovies} shownMovies={shownMovies} onSearch={onSubmitSearch} onChangeFilter={handleFilter} inProcess={inProcess} hasSearched={hasSearched} setSearchRequest={setSearchRequest}  />
               </ProtectedRoute>
             } />
             <Route path="/profile" element={
