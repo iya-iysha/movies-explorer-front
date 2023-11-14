@@ -1,4 +1,6 @@
 <h1>Frontend для учебного проекта <a href="https://movies-explorer.iya-iysha.nomoreparties.co" target="_blank">Movies-Explorer</a></h1>
+<h2>Интерфейс</h2>
+<img width="671" alt="image" src="https://github.com/iya-iysha/movies-explorer-front/assets/35637977/8f108c20-6fd0-4896-bafc-33ac64a7a64e">
 <h2>Стек технологий</h2>
 <ul>
   <li>
