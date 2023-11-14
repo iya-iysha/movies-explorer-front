@@ -61,6 +61,7 @@
   padding: 17px 0 16px;
   margin: 0;
   border-bottom: solid 1px #424242;
+  position: relative;
 }
 
 .profile__input-div:last-child {
@@ -104,6 +105,7 @@
   font-size: 13px;
   font-weight: 400;
   line-height: normal;
+  position: relative;
 }
 
 @media (max-width: 320px) {
@@ -124,7 +126,24 @@
   text-decoration: none;
 }
 
-.profile__submit-btn {
+.profile__success-message {
+  position: absolute;
+  top: -25px;
+  color: #4285F4;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: normal;
+  width: 100%;
+}
+
+.submit-area {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.submit-area__btn {
   text-align: center;
   font-size: 14px;
   font-weight: 500;
@@ -134,4 +153,30 @@
   border-radius: 3px;
   border: none;
   color: #FFFFFF;
+}
+
+.submit-area__error {
+  position: absolute;
+  top: -31px;
+  left: 0;
+  width: 100%;
+  color: #FF004C;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.input_invalid {
+  color: #EE3465;
+}
+
+.input_invalid:focus {
+  border-bottom: solid 1px #EE3465;
+}
+
+.button_disabled {
+  background-color: #F8F8F8;
+  color: #C2C2C2;
+  cursor: default;
 }
